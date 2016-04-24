@@ -108,7 +108,8 @@ void check(struct node_dll *head, struct node *root,int *res)
 		}
 		else
 			return;
-		check(head, root->right,res);
+		
+		check(head->next, root->right,res);
 		
 	}
 	
