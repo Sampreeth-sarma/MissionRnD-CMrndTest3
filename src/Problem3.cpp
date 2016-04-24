@@ -50,30 +50,107 @@ Difficulty : Medium
 */
 #include <stdlib.h>;
 #include <stdio.h>
-
+int solve_tree_rec(struct enode *root);
 //data can be accessed using root->data;
 struct enode{
 	char data[6];
 	struct enode *left;
 	struct enode *right;
 };
+int isOperator(char *);
+int isOperand(char *);
 
 /*
 Helper Functions are optional to write 
 */
 //Helper Functions Start
 int isOperator(char *data){
+	if (data==NULL)
 	return 0;
+	if (data[0] == '+' || data[0] == '-' || data[0] == '*')
+		return 1;
+	else return 0;
 }
 int isOperand(char *data){
+	if (data==NULL)
 	return 0;
+	int i = 0;
+	while (data[i] != NULL)
+	{
+		if (data[0] == '-'&&data[1] != '\0')
+			i++;
+		else if (data[i] >= 48 && data[i] <= 57)
+			i++;
+		else
+			return 0;
+	}
+	return 1;
 }
 int getOperand(char *data){
-	//converts data string to an integer "123" => 123
+	if (data==NULL)
 	return 0;
+	int i = 0,res=0;
+
+	while (data[i] != '\0')
+		i++;
+	for (int j = i - 1; j >= 0; j--)
+	{
+		res = res * 10 + ((int)data[i] - 48);
+	}
+	return res;
 }
 //Helper Functions end
 int solve_tree(struct enode *root){
+	if (root==NULL)
     return -1;
+	if (isOperator(root->data)==1)
+	{
+		if (isOperand(root->left->data) && isOperand(root->right->data)==1)
+		{
+			if (root->data == "+")
+				return (getOperand(root->left->data) + getOperand(root->right->data));
+			else if (root->data == "-")
+				return (getOperand(root->left->data) - getOperand(root->right->data));
+			else if (root->data == "*")
+				return (getOperand(root->left->data) * getOperand(root->right->data));
+		}
+
+		int left_value = solve_tree_rec(root->left);
+		int right_value = solve_tree_rec(root->right);
+		if (root->data == "+")
+			return left_value + right_value;
+		else if (root->data == "-")
+			return left_value - right_value;
+		else if (root->data == "*")
+			return left_value*right_value;
+	}
+	else
+		return -1;
+
+
 }
+int solve_tree_rec(struct enode *root)
+{
+	
+	if (root != NULL)
+	{
+		solve_tree_rec(root->left);
+		if (isOperator(root->data))
+		{
+			int op1, op2;
+			if (isOperand(root->left->data))
+				op1 = getOperand(root->left->data);
+			if (isOperand(root->right->data))
+				op2= getOperand(root->right->data);
+			if (root->data == "+")
+				return op1 + op2;
+			else if (root->data == "-")
+				return op1 - op2;
+			else if (root->data == "*")
+				return op1*op2;
+		}
+		solve_tree_rec(root->right);
+	}
+}
+
 

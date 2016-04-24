@@ -43,14 +43,32 @@ Difficulty : Easy
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
+int search(struct node *, int);
 struct node{
 	int data;
 	struct node *left;
 	struct node *right;
 };
 
-
+void inorder(struct node *, int *);
 int get_missing_value(struct node *root,int n){
+	if (root==NULL)
     return -1;
+	if (n <0)
+		return -1;
+
+	int res=0; inorder(root,&res);
+	int actual_sum = (n*(n + 1)) / 2;
+	return actual_sum - res;
+
+}
+void inorder(struct node *root,int *res)
+{
+	if (root != NULL)
+	{
+		inorder(root->left,res);
+		*res = *res + root->data;
+		inorder(root->right,res);
+
+	}
 }

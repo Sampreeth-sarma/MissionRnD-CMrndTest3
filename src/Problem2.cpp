@@ -59,6 +59,8 @@ Difficulty : Medium +
 */
 #include <stdlib.h>
 #include <stdio.h>
+void inorder1(struct node *, int *);
+void check(struct node_dll *, struct node *,int *);
 
 struct node_dll{
 	int data;
@@ -72,5 +74,52 @@ struct node{
 };
 
 int is_identical(struct node_dll *head, struct node *root){
+	if (root==NULL||head==NULL)
 	return -1;
+	int dll = 0, bst = 0;
+	struct node_dll *temp1 = head;
+	while (temp1 != NULL){
+		temp1 = temp1->next;
+		dll++;
+	}
+	struct node *temp2 = root;
+	
+	inorder1(temp2, &bst);
+	if (bst != dll)
+	{
+		return 0;
+	}
+	temp1 = head; temp2 = root;
+	int res = 0;check(temp1, temp2,&res );
+if (res == bst)
+return 1;
+else
+return -1;
+
+}
+void check(struct node_dll *head, struct node *root,int *res)
+{
+	if (root != NULL)
+	{
+		check(head, root->left,res);
+		
+		if (root->data == head->data){
+			*res = *res + 1; 
+		}
+		else
+			return;
+		check(head, root->right,res);
+		
+	}
+	
+}
+void inorder1(struct node *root, int *res)
+{
+	if (root != NULL)
+	{
+		inorder1(root->left, res);
+		*res = *res + 1;
+		inorder1(root->right, res);
+
+	}
 }
